@@ -9,6 +9,8 @@
   --brand-pressed: #15803d; /* green-700 */
   --surface: #0f1312; /* slightly lighter than bg */
   --border: #1f2a26; /* subtle border */
+  --transition-slow: 420ms;
+  --transition-fast: 200ms;
 }
 
 @theme inline {
@@ -40,4 +42,21 @@ body {
 .focus-ring:focus-visible {
   outline: 2px solid var(--brand);
   outline-offset: 2px;
+}
+
+/* Smooth hover effects for color/border/background on interactive elements */
+a,
+button {
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke;
+  transition-duration: var(--transition-slow);
+  transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  a,
+  button {
+    transition: none;
+  }
 }
