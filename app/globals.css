@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+/* Single dark theme (green + black) */
+:root {
+  --background: #0b0f0e; /* near-black */
+  --foreground: #f8fafc; /* off-white */
+  --brand: #16a34a; /* green-600 */
+  --brand-hover: #22c55e; /* green-500 */
+  --brand-pressed: #15803d; /* green-700 */
+  --surface: #0f1312; /* slightly lighter than bg */
+  --border: #1f2a26; /* subtle border */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-brand: var(--brand);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.container-max {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.focus-ring:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
