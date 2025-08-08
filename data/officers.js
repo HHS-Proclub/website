@@ -10,7 +10,7 @@ export const officers = [
     imageSrc: "/officerPictures/akshay.jpg",
   },
   {
-    name: "Sophia",
+    name: "Sophia Smola Matsui",
     role: "Secretary",
     imageSrc: "/officerPictures/sophia.png",
   },
@@ -25,7 +25,7 @@ export const officers = [
     imageSrc: "/officerPictures/nikhil.jpg",
   },
   {
-    name: "Leo",
+    name: "Leo Sitaraman",
     role: "Workshops Director",
     imageSrc: "/officerPictures/leo.jpg",
   },
