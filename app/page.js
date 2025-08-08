@@ -61,6 +61,19 @@ export default function Home() {
       </section>
 
       <div className="container-max px-4">
+        {/* About teaser */}
+        <Section title="About the Club">
+          <p className="text-[var(--foreground)]/80 max-w-prose">
+            Officers host workshops that align with Intro to Java and APCS, run
+            annual committee projects, and post weekly challenge problems.
+            Whether you’re learning or leading, there’s a place for you.
+          </p>
+          <div className="mt-4">
+            <Link href="/about" className="text-[var(--brand)] hover:underline">
+              Learn more →
+            </Link>
+          </div>
+        </Section>
         {/* News teaser */}
         <Section title="Latest News">
           <div className="grid md:grid-cols-3 gap-4">
@@ -97,20 +110,6 @@ export default function Home() {
               className="text-[var(--brand)] hover:underline"
             >
               Browse problems →
-            </Link>
-          </div>
-        </Section>
-
-        {/* About teaser */}
-        <Section title="About the Club">
-          <p className="text-[var(--foreground)]/80 max-w-prose">
-            Officers host workshops that align with Intro to Java and APCS, run
-            annual committee projects, and post weekly challenge problems.
-            Whether you’re learning or leading, there’s a place for you.
-          </p>
-          <div className="mt-4">
-            <Link href="/about" className="text-[var(--brand)] hover:underline">
-              Learn more →
             </Link>
           </div>
         </Section>
