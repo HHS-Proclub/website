@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Homestead Programming Club",
-  description: "Official site for Homestead High School Programming Club",
+  title: "Homestead CS Club",
+  description: "Official site for Homestead High School CS Club",
 };
 
 export default function RootLayout({ children }) {

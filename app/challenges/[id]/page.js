@@ -11,8 +11,8 @@ export async function generateMetadata({ params }) {
   const problem = problems.find((p) => String(p.id) === params.id);
   return {
     title: problem
-      ? `${problem.title} | Homestead Programming Club`
-      : "Problem | Homestead Programming Club",
+      ? `${problem.title} | Homestead CS Club`
+      : "Problem | Homestead CS Club",
   };
 }
 

@@ -15,7 +15,7 @@ export default function Home() {
         <div className="container-max px-4 py-14 md:py-20 grid md:grid-cols-2 gap-8 items-center">
           <div>
             <h1 className="text-3xl md:text-5xl font-semibold leading-tight">
-              Homestead Programming Club
+              Homestead CS Club
             </h1>
             <p className="mt-4 text-[var(--foreground)]/80 max-w-prose">
               A community of problem-solvers building projects, learning CS, and

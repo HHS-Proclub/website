@@ -3,7 +3,7 @@ import NewsCard from "@/components/NewsCard";
 import { newsItems } from "@/data/news";
 
 export const metadata = {
-  title: "News | Homestead Programming Club",
+  title: "News | Homestead CS Club",
 };
 
 export default function NewsPage() {

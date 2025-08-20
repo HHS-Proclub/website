@@ -3,7 +3,7 @@ import LeaderboardTable from "@/components/LeaderboardTable";
 import { leaderboard } from "@/data/leaderboard";
 
 export const metadata = {
-  title: "Leaderboard | Homestead Programming Club",
+  title: "Leaderboard | Homestead CS Club",
 };
 
 export default function LeaderboardPage() {

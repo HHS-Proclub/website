@@ -3,16 +3,16 @@ import OfficerCard from "@/components/OfficerCard";
 import { officers } from "@/data/officers";
 
 export const metadata = {
-  title: "About | Homestead Programming Club",
+  title: "About | Homestead CS Club",
 };
 
 export default function AboutPage() {
   return (
     <div className="container-max px-4">
-      <Section title="What is Programming Club?">
+      <Section title="What is CS Club?">
         <div className="space-y-4 max-w-prose text-[var(--foreground)]/90">
           <p>
-            Homestead Programming Club is a group of passionate and dedicated
+            Homestead CS Club is a group of passionate and dedicated
             problem-solvers. Officers host workshops which cover fun and
             interesting applicatory topics that correspond to the Intro to Java
             and APCS curriculums.
@@ -25,14 +25,14 @@ export default function AboutPage() {
           </p>
           <p>
             We also post weekly challenge problems to test our members’ skills
-            and prepare them for programming competitions. Programming Club
-            includes an affiliated chapter of Girls Who Code, in which dedicated
-            officers lead an introductory course throughout the school year on a
+            and prepare them for programming competitions. CS Club includes an
+            affiliated chapter of Girls Who Code, in which dedicated officers
+            lead an introductory course throughout the school year on a
             programming language, such as Python.
           </p>
           <p>
             Whether you want to use your expertise to make an impact on campus
-            or learn the basics, Programming Club has a spot for you!
+            or learn the basics, CS Club has a spot for you!
           </p>
         </div>
       </Section>

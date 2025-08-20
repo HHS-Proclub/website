@@ -43,7 +43,7 @@ export default function Navbar() {
         <Link href="/" className="flex items-center gap-3 focus-ring">
           <Image
             src="/logos/logo-white-text.png"
-            alt="Homestead Programming Club"
+            alt="Homestead CS Club"
             width={180}
             height={36}
             priority

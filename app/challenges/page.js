@@ -3,7 +3,7 @@ import ProblemCard from "@/components/ProblemCard";
 import { problems } from "@/data/problems";
 
 export const metadata = {
-  title: "Challenge Problems | Homestead Programming Club",
+  title: "Challenge Problems | Homestead CS Club",
 };
 
 export default function ChallengesPage() {

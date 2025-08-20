@@ -33,7 +33,7 @@ export default function Footer() {
           </nav>
         </div>
         <p className="mt-4 opacity-60">
-          © {new Date().getFullYear()} Homestead Programming Club
+          © {new Date().getFullYear()} Homestead CS Club
         </p>
       </div>
     </footer>
