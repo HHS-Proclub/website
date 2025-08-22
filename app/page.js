@@ -3,11 +3,62 @@ import Image from "next/image";
 import Link from "next/link";
 import Section from "@/components/Section";
 import Card from "@/components/Card";
-import { newsItems } from "@/data/news";
 import { problems } from "@/data/problems";
 import { EMAIL_LIST_URL, DISCORD_URL, SIGNUP_URL } from "@/lib/links";
+import { useEffect, useState } from "react";
+import { db } from "@/config/firebase";
+import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 
 export default function Home() {
+  const [latestNews, setLatestNews] = useState([]);
+  const [isLoadingNews, setIsLoadingNews] = useState(true);
+  const [newsError, setNewsError] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    const load = async () => {
+      try {
+        const q = query(
+          collection(db, "news"),
+          orderBy("date", "desc"),
+          limit(3)
+        );
+        const snap = await getDocs(q);
+        const docs = snap.docs.map((d) => {
+          const data = d.data();
+          const rawDate = data?.date;
+          let formattedDate = "";
+          if (rawDate && typeof rawDate.toDate === "function") {
+            formattedDate = rawDate.toDate().toLocaleDateString();
+          } else if (
+            rawDate &&
+            typeof rawDate === "object" &&
+            "seconds" in rawDate
+          ) {
+            formattedDate = new Date(
+              rawDate.seconds * 1000
+            ).toLocaleDateString();
+          } else if (typeof rawDate === "string") {
+            formattedDate = rawDate;
+          } else if (typeof rawDate === "number") {
+            formattedDate = new Date(rawDate).toLocaleDateString();
+          }
+          return { id: d.id, ...data, date: formattedDate };
+        });
+        if (isMounted) setLatestNews(docs);
+      } catch (err) {
+        if (isMounted) setNewsError("Failed to load news.");
+        // eslint-disable-next-line no-console
+        console.error(err);
+      } finally {
+        if (isMounted) setIsLoadingNews(false);
+      }
+    };
+    load();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
   return (
     <div>
       {/* Hero */}
@@ -76,9 +127,24 @@ export default function Home() {
         </Section>
         {/* News teaser */}
         <Section title="Latest News">
+          {isLoadingNews && (
+            <div className="mb-4 rounded-md border border-[var(--border)] bg-[var(--surface)] p-4 text-sm">
+              Loading news...
+            </div>
+          )}
+          {newsError && (
+            <div className="mb-4 rounded-md border border-red-500 bg-red-500/10 p-4 text-sm text-red-600">
+              {newsError}
+            </div>
+          )}
+          {!isLoadingNews && !newsError && latestNews.length === 0 && (
+            <div className="mb-4 rounded-md border border-[var(--border)] bg-[var(--surface)] p-4 text-sm">
+              No news yet. Check back soon.
+            </div>
+          )}
           <div className="grid md:grid-cols-3 gap-4">
-            {newsItems.slice(0, 3).map((n, idx) => (
-              <Card key={idx} className="p-5">
+            {latestNews.map((n) => (
+              <Card key={n.id} className="p-5">
                 <h3 className="text-lg font-semibold mb-1">{n.title}</h3>
                 <p className="text-xs opacity-60 mb-3">{n.date}</p>
                 <p className="text-sm opacity-90">{n.text}</p>
