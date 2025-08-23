@@ -89,14 +89,12 @@ export default function Home() {
               >
                 Join Discord
               </a>
-              <a
-                href={SIGNUP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/signup"
                 className="inline-flex items-center rounded-md border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] px-4 py-2 text-sm font-medium hover:border-[var(--brand)]"
               >
                 Sign Up
-              </a>
+              </Link>
             </div>
           </div>
           <div className="justify-self-center">

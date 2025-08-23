@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
-import { EMAIL_LIST_URL, DISCORD_URL, SIGNUP_URL } from "@/lib/links";
+import { EMAIL_LIST_URL, DISCORD_URL } from "@/lib/links";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -79,14 +79,12 @@ export default function Navbar() {
           >
             Discord
           </a>
-          <a
-            href={SIGNUP_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/signup"
             className="focus-ring hidden lg:inline-flex items-center rounded-md border border-[var(--brand)] text-[var(--foreground)] px-3 py-2 text-sm font-medium hover:bg-[var(--brand)] hover:text-black"
           >
             Sign Up
-          </a>
+          </Link>
         </div>
 
         {/* Mobile hamburger button */}
@@ -205,15 +203,13 @@ export default function Navbar() {
               >
                 Discord
               </a>
-              <a
-                href={SIGNUP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/signup"
                 className="focus-ring inline-flex items-center justify-center rounded-md border border-[var(--brand)] text-[var(--foreground)] px-4 py-3 text-sm font-medium hover:bg-[var(--brand)] hover:text-black sm:col-span-2"
                 onClick={() => setIsOpen(false)}
               >
                 Sign Up
-              </a>
+              </Link>
             </div>
           </motion.div>
         </motion.div>
