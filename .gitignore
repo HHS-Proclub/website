@@ -42,4 +42,4 @@ next-env.d.ts
 
 /hhs-pro-club-website
 
-firebase.js
+.env
