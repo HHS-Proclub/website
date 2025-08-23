@@ -6,8 +6,9 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
 import { EMAIL_LIST_URL, DISCORD_URL } from "@/lib/links";
-import { auth } from "@/config/firebase";
+import { auth, db } from "@/config/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -22,6 +23,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const [user, setUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     // Close the menu on route change
@@ -41,7 +43,19 @@ export default function Navbar() {
   }, [isOpen]);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => setUser(u));
+    const unsub = onAuthStateChanged(auth, async (u) => {
+      setUser(u);
+      try {
+        if (u) {
+          const snap = await getDoc(doc(db, "users", u.uid));
+          setIsAdmin(!!snap.data()?.isAdmin);
+        } else {
+          setIsAdmin(false);
+        }
+      } catch (_) {
+        setIsAdmin(false);
+      }
+    });
     return () => unsub();
   }, []);
 
@@ -68,6 +82,14 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className="text-[var(--foreground)]/80 hover:text-[var(--foreground)]"
+            >
+              Admin
+            </Link>
+          )}
         </nav>
 
         <div className="hidden sm:flex items-center gap-2">
@@ -200,6 +222,15 @@ export default function Navbar() {
                   {link.label}
                 </Link>
               ))}
+              {isAdmin && (
+                <Link
+                  href="/admin"
+                  onClick={() => setIsOpen(false)}
+                  className="block rounded-md px-4 py-3 text-base bg-[var(--surface)]/60 border border-[var(--border)] hover:bg-[var(--surface)] focus-ring"
+                >
+                  Admin
+                </Link>
+              )}
             </nav>
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <a
