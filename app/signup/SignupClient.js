@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Card from "@/components/Card";
 import Link from "next/link";
 import { auth, db } from "@/config/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 
@@ -15,6 +16,12 @@ export default function SignupClient() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (u) => {
+      if (u) router.replace("/");
+    });
+    return () => unsub();
+  }, [router]);
 
   const onSubmit = async (e) => {
     e.preventDefault();

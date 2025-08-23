@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
 import { EMAIL_LIST_URL, DISCORD_URL } from "@/lib/links";
+import { auth } from "@/config/firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -19,6 +21,7 @@ export default function Navbar() {
   const prefersReduced = useReducedMotion();
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     // Close the menu on route change
@@ -36,6 +39,11 @@ export default function Navbar() {
       document.body.style.overflow = "";
     };
   }, [isOpen]);
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (u) => setUser(u));
+    return () => unsub();
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 bg-[var(--background)]/80 backdrop-blur border-b border-[var(--border)]">
@@ -79,12 +87,21 @@ export default function Navbar() {
           >
             Discord
           </a>
-          <Link
-            href="/signup"
-            className="focus-ring hidden lg:inline-flex items-center rounded-md border border-[var(--brand)] text-[var(--foreground)] px-3 py-2 text-sm font-medium hover:bg-[var(--brand)] hover:text-black"
-          >
-            Sign Up
-          </Link>
+          {!user ? (
+            <Link
+              href="/signup"
+              className="focus-ring hidden lg:inline-flex items-center rounded-md border border-[var(--brand)] text-[var(--foreground)] px-3 py-2 text-sm font-medium hover:bg-[var(--brand)] hover:text-black"
+            >
+              Sign Up
+            </Link>
+          ) : (
+            <button
+              onClick={() => signOut(auth)}
+              className="focus-ring hidden lg:inline-flex items-center rounded-md border border-[var(--brand)] text-[var(--foreground)] px-3 py-2 text-sm font-medium hover:bg-[var(--brand)] hover:text-black"
+            >
+              Sign Out
+            </button>
+          )}
         </div>
 
         {/* Mobile hamburger button */}
@@ -203,13 +220,26 @@ export default function Navbar() {
               >
                 Discord
               </a>
-              <Link
-                href="/signup"
-                className="focus-ring inline-flex items-center justify-center rounded-md border border-[var(--brand)] text-[var(--foreground)] px-4 py-3 text-sm font-medium hover:bg-[var(--brand)] hover:text-black sm:col-span-2"
-                onClick={() => setIsOpen(false)}
-              >
-                Sign Up
-              </Link>
+              {!user ? (
+                <Link
+                  href="/signup"
+                  className="focus-ring inline-flex items-center justify-center rounded-md border border-[var(--brand)] text-[var(--foreground)] px-4 py-3 text-sm font-medium hover:bg-[var(--brand)] hover:text-black sm:col-span-2"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Sign Up
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  className="focus-ring inline-flex items-center justify-center rounded-md border border-[var(--brand)] text-[var(--foreground)] px-4 py-3 text-sm font-medium hover:bg-[var(--brand)] hover:text-black sm:col-span-2"
+                  onClick={() => {
+                    signOut(auth);
+                    setIsOpen(false);
+                  }}
+                >
+                  Sign Out
+                </button>
+              )}
             </div>
           </motion.div>
         </motion.div>

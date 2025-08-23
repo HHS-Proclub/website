@@ -8,11 +8,14 @@ import { EMAIL_LIST_URL, DISCORD_URL, SIGNUP_URL } from "@/lib/links";
 import { useEffect, useState } from "react";
 import { db } from "@/config/firebase";
 import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
+import { auth } from "@/config/firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
 export default function Home() {
   const [latestNews, setLatestNews] = useState([]);
   const [isLoadingNews, setIsLoadingNews] = useState(true);
   const [newsError, setNewsError] = useState(null);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -58,6 +61,10 @@ export default function Home() {
       isMounted = false;
     };
   }, []);
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (u) => setUser(u));
+    return () => unsub();
+  }, []);
   return (
     <div>
       {/* Hero */}
@@ -88,12 +95,21 @@ export default function Home() {
               >
                 Join Discord
               </a>
-              <Link
-                href="/signup"
-                className="inline-flex items-center rounded-md border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] px-4 py-2 text-sm font-medium hover:border-[var(--brand)]"
-              >
-                Sign Up
-              </Link>
+              {!user ? (
+                <Link
+                  href="/signup"
+                  className="inline-flex items-center rounded-md border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] px-4 py-2 text-sm font-medium hover:border-[var(--brand)]"
+                >
+                  Sign Up
+                </Link>
+              ) : (
+                <button
+                  onClick={() => signOut(auth)}
+                  className="inline-flex items-center rounded-md border border-[var(--brand)] text-[var(--foreground)] px-4 py-2 text-sm font-medium hover:bg-[var(--brand)] hover:text-black"
+                >
+                  Sign Out
+                </button>
+              )}
             </div>
           </div>
           <div className="justify-self-center">
