@@ -48,7 +48,6 @@ export default function Home() {
         if (isMounted) setLatestNews(docs);
       } catch (err) {
         if (isMounted) setNewsError("Failed to load news.");
-        // eslint-disable-next-line no-console
         console.error(err);
       } finally {
         if (isMounted) setIsLoadingNews(false);

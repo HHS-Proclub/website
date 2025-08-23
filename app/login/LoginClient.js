@@ -22,7 +22,6 @@ export default function LoginClient() {
       await signInWithEmailAndPassword(auth, email, password);
       router.push("/");
     } catch (err) {
-      // eslint-disable-next-line no-console
       console.error(err);
       setError(err?.message || "Failed to log in.");
     } finally {
@@ -66,7 +65,7 @@ export default function LoginClient() {
           {isLoading ? "Logging in..." : "Log In"}
         </button>
         <p className="text-sm opacity-80">
-          Don't have an account?{" "}
+          Don&rsquo;t have an account?{" "}
           <Link href="/signup" className="text-[var(--brand)] hover:underline">
             Sign up
           </Link>

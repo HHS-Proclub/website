@@ -40,7 +40,6 @@ export default function NewsClient() {
         if (isMounted) setItems(docs);
       } catch (err) {
         if (isMounted) setError("Failed to load news.");
-        // eslint-disable-next-line no-console
         console.error(err);
       } finally {
         if (isMounted) setIsLoading(false);

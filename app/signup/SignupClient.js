@@ -34,7 +34,6 @@ export default function SignupClient() {
       });
       router.push("/");
     } catch (err) {
-      // eslint-disable-next-line no-console
       console.error(err);
       setError(err?.message || "Failed to sign up.");
     } finally {
