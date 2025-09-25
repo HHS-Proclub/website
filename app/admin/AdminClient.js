@@ -28,7 +28,13 @@ export default function AdminClient() {
 
   const [items, setItems] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
-  const [form, setForm] = useState({ title: "", date: "", text: "" });
+  const [form, setForm] = useState({
+    title: "",
+    date: "",
+    text: "",
+    codeLink: "",
+    slidesLink: "",
+  });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
@@ -115,9 +121,11 @@ export default function AdminClient() {
         title: selected.title || "",
         date: selected.date || "",
         text: selected.text || "",
+        codeLink: selected.codeLink || "",
+        slidesLink: selected.slidesLink || "",
       });
     } else {
-      setForm({ title: "", date: "", text: "" });
+      setForm({ title: "", date: "", text: "", codeLink: "", slidesLink: "" });
     }
   }, [selectedId]);
 
@@ -139,6 +147,8 @@ export default function AdminClient() {
           ? Timestamp.fromDate(new Date(form.date))
           : serverTimestamp(),
         updatedAt: serverTimestamp(),
+        codeLink: form.codeLink.trim() || null,
+        slidesLink: form.slidesLink.trim() || null,
       };
       if (!payload.title || !payload.text)
         throw new Error("Title and text are required");
@@ -176,7 +186,7 @@ export default function AdminClient() {
       });
       setItems(docs);
       setSelectedId(null);
-      setForm({ title: "", date: "", text: "" });
+      setForm({ title: "", date: "", text: "", codeLink: "", slidesLink: "" });
     } catch (e) {
       console.error(e);
       setError(e?.message || "Failed to save news.");
@@ -193,7 +203,7 @@ export default function AdminClient() {
       await deleteDoc(doc(db, "news", selectedId));
       setItems((prev) => prev.filter((x) => x.id !== selectedId));
       setSelectedId(null);
-      setForm({ title: "", date: "", text: "" });
+      setForm({ title: "", date: "", text: "", codeLink: "", slidesLink: "" });
     } catch (e) {
       console.error(e);
       setError("Failed to delete news.");
@@ -218,7 +228,13 @@ export default function AdminClient() {
           className="w-full rounded-md border border-[var(--brand)] text-[var(--foreground)] px-3 py-2 text-sm font-medium hover:bg-[var(--brand)] hover:text-black"
           onClick={() => {
             setSelectedId(null);
-            setForm({ title: "", date: "", text: "" });
+            setForm({
+              title: "",
+              date: "",
+              text: "",
+              codeLink: "",
+              slidesLink: "",
+            });
           }}
         >
           + Add News
@@ -285,6 +301,30 @@ export default function AdminClient() {
                 value={form.text}
                 onChange={onChange}
                 required
+              />
+            </div>
+            <div>
+              <label className="block text-sm mb-2">Code link (optional)</label>
+              <input
+                name="codeLink"
+                type="url"
+                placeholder="https://..."
+                className="w-full rounded-md border border-[var(--border)] bg-[var(--surface)] px-3 py-2"
+                value={form.codeLink}
+                onChange={onChange}
+              />
+            </div>
+            <div>
+              <label className="block text-sm mb-2">
+                Slides link (optional)
+              </label>
+              <input
+                name="slidesLink"
+                type="url"
+                placeholder="https://..."
+                className="w-full rounded-md border border-[var(--border)] bg-[var(--surface)] px-3 py-2"
+                value={form.slidesLink}
+                onChange={onChange}
               />
             </div>
             <div className="flex gap-2">

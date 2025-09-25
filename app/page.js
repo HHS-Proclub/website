@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Section from "@/components/Section";
 import Card from "@/components/Card";
+import NewsCard from "@/components/NewsCard";
 import { problems } from "@/data/problems";
 import { EMAIL_LIST_URL, DISCORD_URL, SIGNUP_URL } from "@/lib/links";
 import { useEffect, useState } from "react";
@@ -67,6 +68,37 @@ export default function Home() {
   }, []);
   return (
     <div>
+      {/* Announcement bar */}
+      {!isLoadingNews && !newsError && latestNews.length > 0 && (
+        <div className="border-b border-[var(--border)] bg-[var(--surface)]">
+          <div className="container-max px-4">
+            <div className="flex items-center gap-3 py-2.5 md:py-3 border-l-2 border-[var(--brand)] pl-3 md:pl-4">
+              <span className="text-xs font-medium uppercase tracking-wide opacity-70">
+                Latest
+              </span>
+              <p className="text-sm md:text-[15px] min-w-0 flex-1 truncate">
+                {latestNews[0].title}
+              </p>
+              {latestNews[0].codeLink && (
+                <a
+                  href={latestNews[0].codeLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[var(--brand)] hover:underline text-sm whitespace-nowrap"
+                >
+                  Code link
+                </a>
+              )}
+              <Link
+                href="/news"
+                className="text-[var(--brand)] hover:underline text-sm"
+              >
+                Read more →
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Hero */}
       <section className="border-b border-[var(--border)] bg-[var(--surface)]">
         <div className="container-max px-4 py-14 md:py-20 grid md:grid-cols-2 gap-8 items-center">
@@ -157,11 +189,14 @@ export default function Home() {
           )}
           <div className="grid md:grid-cols-3 gap-4">
             {latestNews.map((n) => (
-              <Card key={n.id} className="p-5">
-                <h3 className="text-lg font-semibold mb-1">{n.title}</h3>
-                <p className="text-xs opacity-60 mb-3">{n.date}</p>
-                <p className="text-sm opacity-90">{n.text}</p>
-              </Card>
+              <NewsCard
+                key={n.id}
+                title={n.title}
+                date={n.date}
+                text={n.text}
+                codeLink={n.codeLink}
+                slidesLink={n.slidesLink}
+              />
             ))}
           </div>
           <div className="mt-4">

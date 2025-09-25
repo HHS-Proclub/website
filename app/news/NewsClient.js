@@ -78,7 +78,14 @@ export default function NewsClient() {
   return (
     <div className="grid md:grid-cols-2 gap-4">
       {items.map((n) => (
-        <NewsCard key={n.id} title={n.title} date={n.date} text={n.text} />
+        <NewsCard
+          key={n.id}
+          title={n.title}
+          date={n.date}
+          text={n.text}
+          codeLink={n.codeLink}
+          slidesLink={n.slidesLink}
+        />
       ))}
     </div>
   );
