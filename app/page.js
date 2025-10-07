@@ -86,7 +86,7 @@ export default function Home() {
                   rel="noopener noreferrer"
                   className="text-[var(--brand)] hover:underline text-sm whitespace-nowrap"
                 >
-                  Code link
+                  Link
                 </a>
               )}
               <Link
