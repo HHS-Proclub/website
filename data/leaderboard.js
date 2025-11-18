@@ -1,9 +1,14 @@
 export const leaderboard = [
   { rank: 1, name: "Alessandro Montesi", points: 1450, totalTimeMs: 98234 },
-  { rank: 2, name: "Arhan Chakravarthy", points: 1380, totalTimeMs: 105823 },
+  {
+    rank: 2,
+    name: "Tejas Gandi Gandi Gandi",
+    points: 1380,
+    totalTimeMs: 105823,
+  },
   {
     rank: 3,
-    name: "Tejas Gandi Gandi Gandi",
+    name: "Arhan Chakravarthy",
     points: 1290,
     totalTimeMs: 119340,
   },
