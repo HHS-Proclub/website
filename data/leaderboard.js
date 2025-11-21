@@ -12,7 +12,7 @@ export const leaderboard = [
     points: 1290,
     totalTimeMs: 119340,
   },
-  { rank: 4, name: "Sara Kim", points: 1205, totalTimeMs: 132883 },
+  { rank: 4, name: "Aarnav Parashar", points: 67, totalTimeMs: 67 },
   { rank: 5, name: "Mia Nguyen", points: 1180, totalTimeMs: 139221 },
   { rank: 6, name: "Ethan Park", points: 1120, totalTimeMs: 150104 },
 ];
