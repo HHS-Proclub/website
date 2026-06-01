@@ -15,11 +15,6 @@ export const officers = [
     imageSrc: "/officerPictures/sophia.png",
   },
   {
-    name: "Shourya Batra",
-    role: "Competitions/Website Director",
-    imageSrc: "/officerPictures/me.jpg",
-  },
-  {
     name: "Nikhil Anoop",
     role: "Events Director",
     imageSrc: "/officerPictures/nikhil.jpg",
