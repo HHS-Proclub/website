@@ -18,19 +18,23 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Initialize Firebase safely
+let app;
+let db = null;
+let auth = null;
 
-// Initialize Analytics only in the browser to avoid SSR issues
-try {
-  if (typeof window !== "undefined") {
+// Only initialize if we have an API key AND we are running in the browser
+if (firebaseConfig.apiKey && typeof window !== "undefined") {
+  try {
+    app = initializeApp(firebaseConfig);
+    db = getFirestore(app);
+    auth = getAuth(app);
+
+    // Initialize Analytics safely
     getAnalytics(app);
+  } catch (error) {
+    console.error("Firebase initialization failed:", error);
   }
-} catch (_) {
-  // no-op: analytics optional
 }
-
-const db = getFirestore(app);
-const auth = getAuth(app);
 
 export { db, auth };
