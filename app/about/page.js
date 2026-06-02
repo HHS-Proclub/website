@@ -9,7 +9,7 @@ export const metadata = {
 export default function AboutPage() {
   return (
     <div className="container-max px-4">
-      <Section title="Who Are We?">
+      <Section title="What is CS Club?">
         <div className="space-y-4 max-w-prose text-[var(--foreground)]/90">
           <p>
             Homestead CS Club is a group of passionate and dedicated

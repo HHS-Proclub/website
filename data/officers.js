@@ -1,8 +1,8 @@
 export const officers = [
   {
-    name: "Leo Sitaraman",
+    name: "Aayush Gaywala",
     role: "President",
-    imageSrc: "/officerPictures/leo.jpg",
+    imageSrc: "/officerPictures/aayush.png",
   },
   {
     name: "Akshay Giri",
@@ -15,9 +15,9 @@ export const officers = [
     imageSrc: "/officerPictures/sophia.png",
   },
   {
-    name: "Aarnav",
+    name: "Shourya Batra",
     role: "Competitions/Website Director",
-    imageSrc: "/officerPictures/godfather.jpg",
+    imageSrc: "/officerPictures/me.jpg",
   },
   {
     name: "Nikhil Anoop",
@@ -25,9 +25,9 @@ export const officers = [
     imageSrc: "/officerPictures/nikhil.jpg",
   },
   {
-    name: "Atharv",
+    name: "Leo Sitaraman",
     role: "Workshops Director",
-    imageSrc: "/officerPictures/godfather.jpg",
+    imageSrc: "/officerPictures/leo.jpg",
   },
   {
     name: "Kevin",
