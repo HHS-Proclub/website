@@ -19,23 +19,14 @@ export function gradePythonSubmission({ sourcePath, tests }) {
 
     try {
       const output = execFileSync(
-        "docker",
-        [
-          "run",
-          "--rm",
-          "-v",
-          `${dir}:/workspace`,
-          "python:3.11",
-          "bash",
-          "-lc",
-          "cd /workspace && python3 main.py < input.txt",
-        ],
+        "python3",
+        [target],
         {
-          timeout: 5000,
-          encoding: "utf8",
-          stdio: ["pipe", "pipe", "pipe"],
+            input: test.input,
+            timeout: 2000,
+            encoding: "utf8",
         }
-      );
+    );
 
       const actual = (output || "").trim();
       const expected = test.output.trim();
