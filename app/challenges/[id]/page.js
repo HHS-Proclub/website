@@ -27,7 +27,7 @@ export default function ProblemDetailPage({ params }) {
     );
   }
 
-  return (
+    return (
     <div className="container-max px-4">
       <Section title={problem.title}>
         <div className="mb-6 rounded-md border border-[var(--border)] bg-[var(--surface)] p-4 text-sm">
@@ -58,18 +58,35 @@ export default function ProblemDetailPage({ params }) {
             </div>
 
             <div className="rounded-md border border-[var(--border)] bg-[var(--surface)] p-4">
-              <div className="rounded-md border border-[var(--border)] bg-[var(--surface)] p-4">
-  <h3 className="font-semibold mb-2">Submit a Solution</h3>
-  <ProblemSubmissionForm problemId={problem.id} />
-  <p className="text-xs opacity-70 mt-2">
-    Judging and account save coming soon.
-  </p>
-</div>
+              <h3 className="font-semibold mb-2">Samples</h3>
+              <div className="grid gap-3">
+                {problem.samples.map((s, idx) => (
+                  <div key={idx} className="grid sm:grid-cols-2 gap-3 text-sm">
+                    <div className="rounded border border-[var(--border)] bg-black/30 p-3">
+                      <p className="font-medium mb-1">Input</p>
+                      <pre className="whitespace-pre-wrap">{s.input}</pre>
+                    </div>
+                    <div className="rounded border border-[var(--border)] bg-black/30 p-3">
+                      <p className="font-medium mb-1">Output</p>
+                      <pre className="whitespace-pre-wrap">{s.output}</pre>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
+
+          <div className="space-y-4">
+            <div className="rounded-md border border-[var(--border)] bg-[var(--surface)] p-4">
+              <h3 className="font-semibold mb-2">Submit a Solution</h3>
+              <ProblemSubmissionForm problemId={problem.id} />
+              <p className="text-xs opacity-70 mt-2">
+                Judging and account save coming soon.
+              </p>
+            </div>
           </div>
         </div>
       </Section>
     </div>
-    
   );
 }

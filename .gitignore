@@ -13,6 +13,9 @@
 # testing
 /coverage
 
+# submission code
+/submissions/
+
 # next.js
 /.next/
 /out/

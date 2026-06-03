@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import fs from "fs/promises";
-import path from "path"; 
+import path from "path";
+import { gradePythonSubmission } from "@/judge/worker"; 
 import { problems } from "@/data/problems";
 
 export const runtime = "nodejs";
@@ -75,9 +76,18 @@ export async function POST(request, { params }) {
     created_at: new Date().toISOString(),
     status: "queued",
   };
-
+  if (language === "python") {
+    const judgeResult = await gradePythonSubmission({
+      sourcePath: filePath,
+      tests: problem.tests || [],
+    });
+    submission.status = judgeResult.passed ? "passed" : "failed";
+    submission.result = judgeResult;
+  } else {
+    submission.result = { message: "Language grading is not implemented yet." };
+  }
   submissions.push(submission);
   await writeJson(submissionsDb, submissions);
 
-  return NextResponse.json({ status: "queued", submission }, { status: 202 });
+  return NextResponse.json({ status: submission.status, submission }, { status: 202 });
 }

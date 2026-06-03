@@ -13,6 +13,7 @@ import { auth } from "@/config/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 
 export default function Home() {
+  //console.log("workkkkkk");
   const [latestNews, setLatestNews] = useState([]);
   const [isLoadingNews, setIsLoadingNews] = useState(true);
   const [newsError, setNewsError] = useState(null);
