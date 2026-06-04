@@ -43,10 +43,10 @@ export default function ProblemSubmissionForm({ problemId }) {
       return;
     }
 
-    const submission = body.submission;
-    if (submission?.status === "passed") {
+    const submission = body.submission ?? body;
+    if (submission?.status === "accepted") {
       setStatus("Passed ✓");
-    } else if (submission?.status === "failed") {
+    } else if (submission?.status === "wrong_answer") {
       setStatus("Failed");
       // Extract failed test case
       const result = submission?.result;

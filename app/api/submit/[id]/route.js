@@ -1,8 +1,10 @@
-import { NextResponse } from "next/server";
+//import { NextResponse } from "next/server";
 import fs from "fs/promises";
 import path from "path";
-import { gradePythonSubmission } from "@/judge/worker"; 
+//import { gradePythonSubmission } from "@/judge/worker"; 
 import { problems } from "@/data/problems";
+import { runCode } from "@/lib/judge0";
+//import { problems } from "@/data/problems";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -35,59 +37,49 @@ function getUserId(request) {
 }
 
 
-export async function POST(request, { params }) {
-  const problem = problems.find((p) => String(p.id) === params.id);
-  if (!problem) {
-    return NextResponse.json({ error: "Problem not found" }, { status: 404 });
-  }
+export async function POST(req, { params }) {
+  const formData = await req.formData();
 
-  const formData = await request.formData();
-  const language = (formData.get("language") || "").toString();
   const file = formData.get("source");
-  const userId =
-    getUserId(request) || formData.get("user_id")?.toString() || null;
+  const language = formData.get("language");
 
-  if (!userId) {
-    return NextResponse.json(
-      { error: "Missing user_id. Authenticate or provide user_id." },
-      { status: 401 }
-    );
-  }
+  const problem = problems.find(p => String(p.id) === params.id);
 
-  if (!file || typeof file === "string") {
-    return NextResponse.json({ error: "Missing file" }, { status: 400 });
-  }
+  const code = await file.text();
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-  await ensureDir(submissionsDir);
+  const language_id = {
+    python: 71,
+    cpp: 54,
+    java: 62,
+    javascript: 63,
+  }[language];
 
-  const filename = `${params.id}-${Date.now()}-${file.name}`;
-  const filePath = path.join(submissionsDir, filename);
-  await fs.writeFile(filePath, buffer);
+  const results = [];
 
-  const submissions = await readJson(submissionsDb, []);
-  const submission = {
-    id: `${Date.now()}-${Math.floor(Math.random() * 100000)}`,
-    user_id: userId,
-    problem_id: problem.id,
-    language,
-    filename,
-    file_path: filePath,
-    created_at: new Date().toISOString(),
-    status: "queued",
-  };
-  if (language === "python") {
-    const judgeResult = await gradePythonSubmission({
-      sourcePath: filePath,
-      tests: problem.tests || [],
+  for (const test of problem.tests) {
+    const res = await runCode({
+      source_code: code,
+      language_id,
+      stdin: test.input,
     });
-    submission.status = judgeResult.passed ? "passed" : "failed";
-    submission.result = judgeResult;
-  } else {
-    submission.result = { message: "Language grading is not implemented yet." };
-  }
-  submissions.push(submission);
-  await writeJson(submissionsDb, submissions);
 
-  return NextResponse.json({ status: submission.status, submission }, { status: 202 });
+    const output = (res.stdout || "").trim();
+    const expected = test.output.trim();
+
+    results.push({
+      input: test.input,
+      expected,
+      actual: output,
+      pass: output === expected,
+    });
+
+    if (output !== expected) break;
+  }
+
+  const passed = results.every(r => r.pass);
+
+  return Response.json({
+    status: passed ? "accepted" : "wrong_answer",
+    results,
+  });
 }
