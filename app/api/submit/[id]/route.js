@@ -65,11 +65,13 @@ export async function POST(req, { params }) {
 
     const output = (res.stdout || "").trim();
     const expected = test.output.trim();
+    const error = res.stderr ? (res.stderr || "").trim() : null;
 
     results.push({
       input: test.input,
       expected,
       actual: output,
+      error,
       pass: output === expected,
     });
 

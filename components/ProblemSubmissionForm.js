@@ -47,11 +47,11 @@ export default function ProblemSubmissionForm({ problemId }) {
     if (submission?.status === "accepted") {
       setStatus("Passed ✓");
     } else if (submission?.status === "wrong_answer") {
+      console.log("Failed test case");
       setStatus("Failed");
       // Extract failed test case
-      const result = submission?.result;
-      if (result?.results) {
-        const failed = result.results.find((r) => !r.pass);
+      if (submission?.results) {
+        const failed = submission.results.find((r) => !r.pass);
         if (failed) {
           setFailedTests([failed]);
         }
@@ -59,6 +59,7 @@ export default function ProblemSubmissionForm({ problemId }) {
     } else {
       setStatus(submission?.status || "Queued");
     }
+    console.log(status);
   };
 
   if (loading) return <p>Checking sign-in...</p>;
