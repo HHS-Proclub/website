@@ -8,7 +8,10 @@ export const problems = [
     outputSpec: "n*2",
     samples: [ { input: "2\n", output: "4\n" }, { input: "7\n", output: "14\n" } ],
     tests: [ { input: "1\n", output: "2\n" }, { input: "10\n", output: "20\n" }, { input: "123\n", output: "246\n" } ],
+    points: 50,
+
   },
+
   {
     id: 2,
     title: "Reverse a String",
@@ -18,5 +21,8 @@ export const problems = [
     outputSpec: "The reversed string",
     samples: [ { input: "hello\n", output: "olleh\n" } ],
     tests: [ { input: "abc\n", output: "cba\n" } ],
+    points: 50,
+    
   },
+
 ];
