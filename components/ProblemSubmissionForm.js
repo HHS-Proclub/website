@@ -47,7 +47,6 @@ export default function ProblemSubmissionForm({ problemId }) {
     if (submission?.status === "accepted") {
       setStatus("Passed ✓");
     } else if (submission?.status === "wrong_answer") {
-      console.log("Failed test case");
       setStatus("Failed");
       // Extract failed test case
       if (submission?.results) {
