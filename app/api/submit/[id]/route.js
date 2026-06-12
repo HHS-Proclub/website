@@ -20,6 +20,7 @@ const serviceAccount = {
     .trim(),
 };
 
+
 const app =
   getApps().length === 0
     ? initializeApp({
