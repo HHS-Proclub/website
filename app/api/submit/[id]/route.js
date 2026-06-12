@@ -1,57 +1,35 @@
-//import { NextResponse } from "next/server";
-import fs from "fs/promises";
-import path from "path";
-//import { gradePythonSubmission } from "@/judge/worker"; 
+import { NextResponse } from "next/server";
 import { problems } from "@/data/problems";
 import { runCode } from "@/lib/judge0";
-import { initializeApp, cert } from "firebase-admin/app";
-import { getFirestore, FieldValue } from "firebase-admin/firestore";
-//import { problems } from "@/data/problems";
+
+
+import { initializeApp, cert, getApps } from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const submissionsDir = path.join(process.cwd(), "submissions");
-const submissionsDb = path.join(process.cwd(), "submissions.json");
+/* ---------------- FIREBASE INIT ---------------- */
 
-// Initialize Firebase Admin
-let db;
-try {
-  const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY || "{}");
-  if (serviceAccount.project_id) {
-    const app = initializeApp({
-      credential: cert(serviceAccount),
-    });
-    db = getFirestore(app);
-  }
-} catch (err) {
-  console.error("Firebase admin initialization error:", err);
-}
+const serviceAccount = {
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+  privateKey: process.env.FIREBASE_PRIVATE_KEY
+    ?.replace(/\\n/g, "\n")
+    .replace(/\r/g, "")
+    .trim(),
+};
 
-async function ensureDir(dir) {
-  await fs.mkdir(dir, { recursive: true });
-}
+const app =
+  getApps().length === 0
+    ? initializeApp({
+        credential: cert(serviceAccount),
+      })
+    : getApps()[0];
 
-async function readJson(file, fallback = []) {
-  try {
-    const text = await fs.readFile(file, "utf8");
-    return JSON.parse(text);
-  } catch {
-    return fallback;
-  }
-}
+const db = getFirestore(app);
 
-async function writeJson(file, data) {
-  await fs.writeFile(file, JSON.stringify(data, null, 2), "utf8");
-}
-
-function getUserId(request) {
-  const cookie = request.headers.get("cookie");
-  if (!cookie) return null;
-  const match = cookie.match(/user_id=([^;]+)/);
-  return match?.[1] ?? null;
-}
-
+/* ---------------- MAIN HANDLER ---------------- */
 
 export async function POST(req, { params }) {
   const formData = await req.formData();
@@ -60,7 +38,11 @@ export async function POST(req, { params }) {
   const language = formData.get("language");
   const userId = formData.get("user_id");
 
-  const problem = problems.find(p => String(p.id) === params.id);
+  const problem = problems.find((p) => String(p.id) === params.id);
+
+  if (!problem) {
+    return NextResponse.json({ error: "Problem not found" }, { status: 404 });
+  }
 
   const code = await file.text();
 
@@ -73,6 +55,8 @@ export async function POST(req, { params }) {
 
   const results = [];
 
+  /* ---------------- RUN TESTS ---------------- */
+
   for (const test of problem.tests) {
     const res = await runCode({
       source_code: code,
@@ -82,52 +66,63 @@ export async function POST(req, { params }) {
 
     const output = (res.stdout || "").trim();
     const expected = test.output.trim();
-    const error = res.stderr ? (res.stderr || "").trim() : null;
+
+    const pass = output === expected;
 
     results.push({
       input: test.input,
       expected,
       actual: output,
-      error,
-      pass: output === expected,
+      pass,
     });
 
-    if (output !== expected) break;
+    if (!pass) break;
   }
 
-  const passed = results.every(r => r.pass);
+  const passed = results.every((r) => r.pass);
 
-  // Award points if submission passed
-  if (passed && db && userId) {
+  /* ---------------- AWARD POINTS ---------------- */
+
+  if (passed && userId) {
+    console.log("KEY EXISTS:", !!process.env.FIREBASE_PRIVATE_KEY);
+    console.log("KEY START:", process.env.FIREBASE_PRIVATE_KEY?.slice(0, 30));
+    console.log("HAS NEWLINES STRING:", process.env.FIREBASE_PRIVATE_KEY?.includes("\n"));
     try {
       const solveId = `${userId}_${problem.id}`;
-      const solveDoc = db.collection("userSolvedProblems").doc(solveId);
-      const solveSnapshot = await solveDoc.get();
 
-      // Only award points if problem hasn't been solved before
-      if (!solveSnapshot.exists) {
-        const pointsAwarded = problem.points || 0;
+      const solveRef = db.collection("userSolvedProblems").doc(solveId);
+      const solveSnap = await solveRef.get();
 
-        // Update user's total points
-        const userRef = db.collection("users").doc(userId);
-        await userRef.update({
-          points: FieldValue.increment(pointsAwarded),
-        });
-
-        // Record the solve in userSolvedProblems
-        await solveDoc.set({
+      if (!solveSnap.exists) {
+        // mark solved
+        await solveRef.set({
           uid: userId,
           problemId: problem.id,
-          pointsAwarded,
+          pointsAwarded: problem.points || 0,
+          createdAt: new Date(),
         });
+
+        const userRef = db.collection("users").doc(userId);
+        const userSnap = await userRef.get();
+
+        const currentPoints =
+          userSnap.exists ? userSnap.data().points || 0 : 0;
+
+        await userRef.set(
+          {
+            points: currentPoints + (problem.points || 0),
+          },
+          { merge: true }
+        );
       }
     } catch (err) {
-      console.error("Error awarding points:", err);
-      // Don't fail the submission if points allocation fails
+      console.error("[Firestore] Failed to award points:", err);
     }
   }
 
-  return Response.json({
+  /* ---------------- RESPONSE ---------------- */
+
+  return NextResponse.json({
     status: passed ? "accepted" : "wrong_answer",
     results,
   });
